@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct 
 {
@@ -15,31 +16,40 @@ static Student students[50];
 static int index = 0;
 
 int main()
-{
-  while(1)
+{ 
+  char name[100];
+  int age;
+  char class[3];
+  char option;
+  bool run = true;
+  while(run)
   {
-    char name[100];
-    int age;
-    char class[3];
-
-    printf("Name: ");
-    scanf("%s", name);
-
-    if(strcmp(name, "exit") == 0)
+    printf("A. Add Student\nQ. Quit\n");
+    scanf(" %c", &option);
+    while (getchar() != '\n');
+    switch(option)
     {
-      break;
+      case 'A':
+        printf("Name: ");
+        scanf("%s", name);
+
+        printf("Age: ");
+        scanf("%d", &age);
+
+        printf("Class: ");
+        scanf("%s", class);
+
+        Student s = createStudent(name, age, class);
+
+        addStudent(s);
+        break;
+      case 'Q':
+        run = false;
+        break;
+      default:
+        printf("Choose a valid option\n");
+        break;
     }
-
-    printf("Age: ");
-    scanf("%d", &age);
-
-    printf("Class: ");
-    scanf("%s", class);
-
-    Student s = createStudent(name, age, class);
-
-    addStudent(s);
-
   }
   
   for(int i = 0; i < index; i++)
