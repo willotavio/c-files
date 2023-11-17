@@ -14,6 +14,8 @@ typedef struct
 
 Student createStudent(int, char[], int, char[]);
 void addStudent(Student);
+void editStudent(int);
+void updateStudent(int, char[], int, char[]);
 void listStudents();
 void freeStudents();
 
@@ -30,10 +32,11 @@ int main()
   bool run = true;
   while(run)
   {
-    printf("A. Add Student\nL. List Students\nQ. Quit\n");
+    printf("A. Add Student\nU. Update Student\nL. List Students\nQ. Quit\n");
     scanf(" %c", &option);
     option = toupper(option);
     while (getchar() != '\n');
+    int idToEdit;
     switch(option)
     {
       case 'A':
@@ -49,6 +52,11 @@ int main()
         Student s = createStudent(id+1, name, age, class);
 
         addStudent(s);
+        break;
+      case 'U':
+        printf("Id: ");
+        scanf("%d", &idToEdit);
+        editStudent(idToEdit);
         break;
       case 'L':
         listStudents();
@@ -84,7 +92,61 @@ void addStudent(Student student)
   id++;
 }
 
-void listStudents(){
+void editStudent(int id)
+{
+  char editOption;
+
+  char newName[100];
+  strcpy(newName, students[id-1].name);
+  int newAge = students[id-1].age;
+  char newClass[3];
+  strcpy(newClass, students[id-1].class);
+  
+  bool editing = true;
+  while(editing)
+  {
+    printf("%s\n", newName);
+    printf("%d\n", newAge);
+    printf("%s\n", newClass);
+    printf("N. Name\nA. Age\nC. Class\nS. Save\n");
+    scanf(" %c", &editOption);
+    editOption = toupper(editOption);
+    while (getchar() != '\n');
+    switch(editOption)
+    {
+      case 'N':
+        printf("Name: ");
+        scanf("%s", newName);
+        break;
+      case 'A':
+        printf("Age: ");
+        scanf("%d", &newAge);
+        break;
+      case 'C':
+        printf("Class: ");
+        scanf("%s", newClass);
+        break;
+      case 'S':
+        editing = false;
+        break;
+      default:
+        printf("Choose a valid option\n");
+        break;
+    }
+  }
+  updateStudent(id, newName, newAge, newClass);
+  
+}
+
+void updateStudent(int id, char name[], int age, char class[])
+{
+   strcpy(students[id-1].name, name);
+   students[id-1].age = age;
+   strcpy(students[id-1].class, class);
+}
+
+void listStudents()
+{
   if(index == 0)
   {
     printf("Empty list\n");
