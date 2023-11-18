@@ -23,7 +23,7 @@ void menu()
   while(run)
   {
     int selectedId;
-    printf("A. Add\nL. List\nF. Find\nQ. Quit\n");
+    printf("A. Add\nL. List\nF. Find\nU. Update\nQ. Quit\n");
     char option;
     scanf(" %c", &option);
     option = toupper(option);
@@ -71,6 +71,11 @@ void menu()
         scanf("%d", &selectedId);
         findStudent(selectedId);
         break;
+      case 'U':
+        printf("Id: ");
+        scanf("%d", &selectedId);
+        editStudent(selectedId);
+        break;
       case 'Q':
         run = false;
         break;
@@ -79,7 +84,6 @@ void menu()
         break;
     }
   }
-
 }
 
 Student createStudent(char name[50], int age, double gpa, char class[3])
@@ -132,21 +136,113 @@ int studentExists(int studentId)
   return -1;
 }
 
-void findStudent(int studentId)
+bool findStudent(int studentId)
 {
-  int foundId = studentExists(studentId);
-  if(foundId > -1)
+  int foundIndex = studentExists(studentId);
+  if(foundIndex > -1)
   {
     printf("---------------------\n");
-    printf("Student Id: %d\n", students[foundId].id);
-    printf("Name: %s\n", students[foundId].name);
-    printf("Age: %d\n", students[foundId].age);
-    printf("GPA: %.2lf\n", students[foundId].gpa);
-    printf("Class: %s\n", students[foundId].class);
+    printf("Student Id: %d\n", students[foundIndex].id);
+    printf("Name: %s\n", students[foundIndex].name);
+    printf("Age: %d\n", students[foundIndex].age);
+    printf("GPA: %.2lf\n", students[foundIndex].gpa);
+    printf("Class: %s\n", students[foundIndex].class);
     printf("---------------------\n");
+    return true;
   }
   else
   {
     printf("Student not found\n");
+    return false;
+  }
+}
+
+void editStudent(int studentId)
+{
+  int foundIndex = studentExists(studentId);
+  if(foundIndex > -1)
+  {
+    char newName[50];
+    strcpy(newName, students[foundIndex].name);
+    int newAge = students[foundIndex].age;
+    double newGpa = students[foundIndex].gpa;
+    char newClass[3];
+    strcpy(newClass, students[foundIndex].class);
+    bool editing = true;
+    while(editing)
+    {
+      printf("---------------------\n");
+      printf("Student Id: %d\n", studentId);
+      printf("Name: %s\n", newName);
+      printf("Age: %d\n", newAge);
+      printf("GPA: %.2lf\n", newGpa);
+      printf("Class: %s\n", newClass);
+      printf("---------------------\n");
+      char editOption;
+      printf("N. Name\nA. Age\nG. GPA\nC. Class\nS. Save\n");
+      scanf(" %c", &editOption);
+      editOption = toupper(editOption);
+      getchar();
+      switch(editOption)
+      {
+        case 'N':
+          printf("Name: ");
+          fgets(newName, sizeof(newName), stdin);
+          if(newName[strlen(newName) - 1] == '\n')
+          {
+            newName[strlen(newName) - 1] = '\0';
+          }
+          break;
+        case 'A':
+          printf("Age: ");
+          scanf("%d", &newAge);
+          getchar();
+          break;
+        case 'G':
+          printf("GPA: ");
+          scanf("%lf", &newGpa);
+          getchar();
+          break;
+        case 'C':
+          printf("Class: ");
+          fgets(newClass, sizeof(newClass), stdin);
+          if(newClass[strlen(newClass) - 1] == '\n')
+          {
+            newClass[strlen(newClass) - 1] = '\0';
+          }
+          break;
+        case 'S':
+          editing = false;
+          updateStudent(foundIndex, newName, newAge, newGpa, newClass);
+          break;
+        default:
+          printf("Enter a valid option\n");
+          break;
+      }
+    }
+  }
+  else
+  {
+    printf("Student not found\n");
+  }
+}
+
+void updateStudent(int foundIndex, char newName[50], int newAge, double newGpa, char newClass[3])
+{
+  if(strcmp(newName, students[foundIndex].name) != 0)
+  {
+    strcpy(students[foundIndex].name, newName);
+  }
+  if(newAge != students[foundIndex].age)
+  {
+    students[foundIndex].age = newAge;
+  }
+  if(newGpa != students[foundIndex].gpa)
+  {
+    students[foundIndex].gpa = newGpa;
+  }
+  if(strcmp(newClass, students[foundIndex].class) != 0)
+  {
+    strcpy(students[foundIndex].class, newClass);
   }
 }

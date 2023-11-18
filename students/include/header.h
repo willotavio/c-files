@@ -15,6 +15,8 @@ Student createStudent(char[50], int, double, char[3]);
 void addStudent(Student);
 void listStudents();
 int studentExists(int);
-void findStudent(int);
+bool findStudent(int);
+void editStudent(int);
+void updateStudent(int, char[50], int, double, char[3]);
 
 #endif
