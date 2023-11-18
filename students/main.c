@@ -17,7 +17,7 @@ void addStudent(Student);
 void editStudent(int);
 void updateStudent(int, char[], int, char[]);
 void listStudents();
-bool studentExists(int);
+int studentExists(int);
 void findStudent(int);
 void freeStudents();
 
@@ -100,48 +100,55 @@ void addStudent(Student student)
 
 void editStudent(int id)
 {
-  char editOption;
-
-  char newName[100];
-  strcpy(newName, students[id-1].name);
-  int newAge = students[id-1].age;
-  char newClass[3];
-  strcpy(newClass, students[id-1].class);
-  
-  bool editing = true;
-  while(editing)
+  int indexFound = studentExists(id);
+  if(indexFound > -1)
   {
-    printf("%s\n", newName);
-    printf("%d\n", newAge);
-    printf("%s\n", newClass);
-    printf("N. Name\nA. Age\nC. Class\nS. Save\n");
-    scanf(" %c", &editOption);
-    editOption = toupper(editOption);
-    while (getchar() != '\n');
-    switch(editOption)
+    char editOption;
+
+    char newName[100];
+    strcpy(newName, students[indexFound].name);
+    int newAge = students[indexFound].age;
+    char newClass[3];
+    strcpy(newClass, students[indexFound].class);
+    
+    bool editing = true;
+    while(editing)
     {
-      case 'N':
-        printf("Name: ");
-        scanf("%s", newName);
-        break;
-      case 'A':
-        printf("Age: ");
-        scanf("%d", &newAge);
-        break;
-      case 'C':
-        printf("Class: ");
-        scanf("%s", newClass);
-        break;
-      case 'S':
-        editing = false;
-        break;
-      default:
-        printf("Choose a valid option\n");
-        break;
+      printf("%s\n", newName);
+      printf("%d\n", newAge);
+      printf("%s\n", newClass);
+      printf("N. Name\nA. Age\nC. Class\nS. Save\n");
+      scanf(" %c", &editOption);
+      editOption = toupper(editOption);
+      while (getchar() != '\n');
+      switch(editOption)
+      {
+        case 'N':
+          printf("Name: ");
+          scanf("%s", newName);
+          break;
+        case 'A':
+          printf("Age: ");
+          scanf("%d", &newAge);
+          break;
+        case 'C':
+          printf("Class: ");
+          scanf("%s", newClass);
+          break;
+        case 'S':
+          editing = false;
+          break;
+        default:
+          printf("Choose a valid option\n");
+          break;
+      }
     }
+    updateStudent(indexFound, newName, newAge, newClass);
   }
-  updateStudent(id, newName, newAge, newClass);
-  
+  else
+  {
+    printf("Student not found\n");
+  }
 }
 
 void updateStudent(int id, char name[], int age, char class[])
@@ -172,27 +179,28 @@ void listStudents()
   }
 }
 
-bool studentExists(int id)
+int studentExists(int id)
 {
   for(int i = 0; i < index; i++)
     {
       if(students[i].id == id)
       {
-        return true;
+        return i;
       }
     }
-    return false;
+    return -1;
 }
 
 void findStudent(int id)
 {
-  if(studentExists(id))
+  int foundIndex = studentExists(id);
+  if(foundIndex > -1)
   {
     printf("----------------------\n");
-    printf("Id: %d\n", students[id].id);
-    printf("Name: %s\n", students[id].name);
-    printf("Age: %d\n", students[id].age);
-    printf("Class: %s\n", students[id].class);
+    printf("Id: %d\n", students[foundIndex].id);
+    printf("Name: %s\n", students[foundIndex].name);
+    printf("Age: %d\n", students[foundIndex].age);
+    printf("Class: %s\n", students[foundIndex].class);
     printf("----------------------\n");
   }
   else
