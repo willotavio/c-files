@@ -22,7 +22,8 @@ void menu()
 
   while(run)
   {
-    printf("A. Add\nL. List\nQ. Quit\n");
+    int selectedId;
+    printf("A. Add\nL. List\nF. Find\nQ. Quit\n");
     char option;
     scanf(" %c", &option);
     option = toupper(option);
@@ -64,6 +65,11 @@ void menu()
         break;
       case 'L':
         listStudents();
+        break;
+      case 'F':
+        printf("Id: ");
+        scanf("%d", &selectedId);
+        findStudent(selectedId);
         break;
       case 'Q':
         run = false;
@@ -124,4 +130,23 @@ int studentExists(int studentId)
     }
   }
   return -1;
+}
+
+void findStudent(int studentId)
+{
+  int foundId = studentExists(studentId);
+  if(foundId > -1)
+  {
+    printf("---------------------\n");
+    printf("Student Id: %d\n", students[foundId].id);
+    printf("Name: %s\n", students[foundId].name);
+    printf("Age: %d\n", students[foundId].age);
+    printf("GPA: %.2lf\n", students[foundId].gpa);
+    printf("Class: %s\n", students[foundId].class);
+    printf("---------------------\n");
+  }
+  else
+  {
+    printf("Student not found\n");
+  }
 }
