@@ -7,6 +7,7 @@
 
 static Student students[50];
 static int index = 0;
+static int studentId = -1;
 
 int main()
 {
@@ -78,7 +79,7 @@ void menu()
 Student createStudent(char name[50], int age, double gpa, char class[3])
 {
   Student student;
-  student.id = index + 1;
+  student.id = studentId + 1;
   strcpy(student.name, name);
   student.age = age;
   student.gpa = gpa;
@@ -90,6 +91,7 @@ void addStudent(Student student)
 {
   students[index] = student;
   index++;
+  studentId++;
 }
 
 void listStudents(){
@@ -110,5 +112,16 @@ void listStudents(){
       printf("---------------------\n");
     }
   }
-  
+}
+
+int studentExists(int studentId)
+{
+  for(int i = 0; i < index; i++)
+  {
+    if(students[i].id == studentId)
+    {
+      return i;
+    }
+  }
+  return -1;
 }

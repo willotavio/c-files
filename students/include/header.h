@@ -14,5 +14,6 @@ void menu();
 Student createStudent(char[50], int, double, char[3]);
 void addStudent(Student);
 void listStudents();
+int studentExists(int);
 
 #endif
