@@ -19,6 +19,7 @@ void updateStudent(int, char[], int, char[]);
 void listStudents();
 int studentExists(int);
 void findStudent(int);
+void deleteStudent(int);
 void freeStudents();
 
 static Student students[50];
@@ -34,7 +35,7 @@ int main()
   bool run = true;
   while(run)
   {
-    printf("A. Add Student\nU. Update Student\nL. List Students\nF. Find Student\nQ. Quit\n");
+    printf("A. Add Student\nU. Update Student\nL. List Students\nF. Find Student\nD. Delete\nQ. Quit\n");
     scanf(" %c", &option);
     option = toupper(option);
     while (getchar() != '\n');
@@ -66,6 +67,10 @@ int main()
       case 'F':
         scanf("%d", &idToEdit);
         findStudent(idToEdit);
+        break;
+      case 'D':
+        scanf("%d", &idToEdit);
+        deleteStudent(idToEdit);
         break;
       case 'Q':
         run = false;
@@ -202,6 +207,23 @@ void findStudent(int id)
     printf("Age: %d\n", students[foundIndex].age);
     printf("Class: %s\n", students[foundIndex].class);
     printf("----------------------\n");
+  }
+  else
+  {
+    printf("Student not found\n");
+  }
+}
+
+void deleteStudent(int id)
+{
+  int indexFound = studentExists(id);
+  if(indexFound > -1)
+  {
+    for(int i = indexFound; i < index; i++)
+    {
+      students[indexFound] = students[indexFound+1];
+    }
+    index--;
   }
   else
   {
