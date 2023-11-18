@@ -17,11 +17,13 @@ void addStudent(Student);
 void editStudent(int);
 void updateStudent(int, char[], int, char[]);
 void listStudents();
+bool studentExists(int);
+void findStudent(int);
 void freeStudents();
 
 static Student students[50];
 static int index = 0;
-static int id = 0;
+static int id = -1;
 
 int main()
 { 
@@ -32,7 +34,7 @@ int main()
   bool run = true;
   while(run)
   {
-    printf("A. Add Student\nU. Update Student\nL. List Students\nQ. Quit\n");
+    printf("A. Add Student\nU. Update Student\nL. List Students\nF. Find Student\nQ. Quit\n");
     scanf(" %c", &option);
     option = toupper(option);
     while (getchar() != '\n');
@@ -60,6 +62,10 @@ int main()
         break;
       case 'L':
         listStudents();
+        break;
+      case 'F':
+        scanf("%d", &idToEdit);
+        findStudent(idToEdit);
         break;
       case 'Q':
         run = false;
@@ -140,9 +146,9 @@ void editStudent(int id)
 
 void updateStudent(int id, char name[], int age, char class[])
 {
-   strcpy(students[id-1].name, name);
-   students[id-1].age = age;
-   strcpy(students[id-1].class, class);
+   strcpy(students[id].name, name);
+   students[id].age = age;
+   strcpy(students[id].class, class);
 }
 
 void listStudents()
@@ -163,6 +169,35 @@ void listStudents()
       printf("Class: %s\n", students[i].class);
       printf("----------------------\n");
     }
+  }
+}
+
+bool studentExists(int id)
+{
+  for(int i = 0; i < index; i++)
+    {
+      if(students[i].id == id)
+      {
+        return true;
+      }
+    }
+    return false;
+}
+
+void findStudent(int id)
+{
+  if(studentExists(id))
+  {
+    printf("----------------------\n");
+    printf("Id: %d\n", students[id].id);
+    printf("Name: %s\n", students[id].name);
+    printf("Age: %d\n", students[id].age);
+    printf("Class: %s\n", students[id].class);
+    printf("----------------------\n");
+  }
+  else
+  {
+    printf("Student not found\n");
   }
 }
 
