@@ -2,23 +2,53 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #include "../include/header.h"
 
-static Student students[50];
+int studentArraySize = 50;
+static Student *students;
 static int index = 0;
-static int studentId = -1;
+static int currentStudentId = -1;
+
+void freeMemory()
+{
+  for(int i = 0; i < index; i++)
+  {
+    free(students[i].name);
+    free(students[i].class);
+  }
+  free(students);
+}
 
 int main()
 {
+  students = (Student *)malloc(studentArraySize * sizeof(Student));
+  if(students == NULL)
+  {
+    fprintf(stderr, "Memory allocation failed\n");
+    return (EXIT_FAILURE);
+  }
   menu();
-  
+
+  freeMemory();
   return 0;
 }
 
 void menu()
 {
   bool run = true;
+
+  char * name = (char *) malloc(50 * sizeof(char));
+  int age;
+  double gpa;
+  char * class = (char *) malloc(3 * sizeof(char));
+
+  if(name == NULL || class == NULL)
+  {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
 
   while(run)
   {
@@ -29,16 +59,11 @@ void menu()
     option = toupper(option);
     getchar();
 
-    char name[50];
-    int age;
-    double gpa;
-    char class[3];
-
     switch(option)
     {
       case 'A':
         printf("Name: ");
-        fgets(name, sizeof(name), stdin);
+        fgets(name, 50, stdin);
         if(name[strlen(name) - 1] == '\n')
         {
           name[strlen(name) - 1] = '\0';
@@ -53,14 +78,14 @@ void menu()
         getchar();
 
         printf("Class: ");
-        fgets(class, sizeof(class), stdin);
+        fgets(class, 3, stdin);
         if(class[strlen(class) - 1] == '\n')
         {
           class[strlen(class) - 1] = '\0';
         }
         
         Student s1 = createStudent(name, age, gpa, class);
-        addStudent(s1);
+        addStudent(&s1);
         
         break;
       case 'L':
@@ -89,24 +114,43 @@ void menu()
         break;
     }
   }
+  free(name);
+  free(class);
 }
 
-Student createStudent(char name[50], int age, double gpa, char class[3])
+Student createStudent(char *name, int age, double gpa, char *class)
 {
   Student student;
-  student.id = studentId + 1;
-  strcpy(student.name, name);
+  student.name = (char *) malloc(strlen(name) + 1);
+  student.class = (char *) malloc(strlen(class) + 1);
+
+  if(student.name == NULL || student.class == NULL)
+  {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+
+  student.id = currentStudentId + 1;
+  if(strncpy(student.name, name, strlen(name) + 1) == NULL)
+  {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
   student.age = age;
   student.gpa = gpa;
-  strcpy(student.class, class);
+  if(strncpy(student.class, class, strlen(class) + 1) == NULL)
+  {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
   return student;
 }
 
-void addStudent(Student student)
+void addStudent(Student *student)
 {
-  students[index] = student;
+  students[index] = *student;
   index++;
-  studentId++;
+  currentStudentId++;
 }
 
 void listStudents(){
@@ -143,15 +187,15 @@ int studentExists(int studentId)
 
 bool findStudent(int studentId)
 {
-  int foundIndex = studentExists(studentId);
-  if(foundIndex > -1)
+  int indexFound = studentExists(studentId);
+  if(indexFound > -1)
   {
     printf("---------------------\n");
-    printf("Student Id: %d\n", students[foundIndex].id);
-    printf("Name: %s\n", students[foundIndex].name);
-    printf("Age: %d\n", students[foundIndex].age);
-    printf("GPA: %.2lf\n", students[foundIndex].gpa);
-    printf("Class: %s\n", students[foundIndex].class);
+    printf("Student Id: %d\n", students[indexFound].id);
+    printf("Name: %s\n", students[indexFound].name);
+    printf("Age: %d\n", students[indexFound].age);
+    printf("GPA: %.2lf\n", students[indexFound].gpa);
+    printf("Class: %s\n", students[indexFound].class);
     printf("---------------------\n");
     return true;
   }
@@ -164,15 +208,15 @@ bool findStudent(int studentId)
 
 void editStudent(int studentId)
 {
-  int foundIndex = studentExists(studentId);
-  if(foundIndex > -1)
+  int indexFound = studentExists(studentId);
+  if(indexFound > -1)
   {
     char newName[50];
-    strcpy(newName, students[foundIndex].name);
-    int newAge = students[foundIndex].age;
-    double newGpa = students[foundIndex].gpa;
+    strcpy(newName, students[indexFound].name);
+    int newAge = students[indexFound].age;
+    double newGpa = students[indexFound].gpa;
     char newClass[3];
-    strcpy(newClass, students[foundIndex].class);
+    strcpy(newClass, students[indexFound].class);
     bool editing = true;
     while(editing)
     {
@@ -218,7 +262,7 @@ void editStudent(int studentId)
           break;
         case 'S':
           editing = false;
-          updateStudent(foundIndex, newName, newAge, newGpa, newClass);
+          updateStudent(indexFound, newName, newAge, newGpa, newClass);
           break;
         default:
           printf("Enter a valid option\n");
@@ -232,32 +276,32 @@ void editStudent(int studentId)
   }
 }
 
-void updateStudent(int foundIndex, char newName[50], int newAge, double newGpa, char newClass[3])
+void updateStudent(int indexFound, char newName[50], int newAge, double newGpa, char newClass[3])
 {
-  if(strcmp(newName, students[foundIndex].name) != 0)
+  if(strcmp(newName, students[indexFound].name) != 0)
   {
-    strcpy(students[foundIndex].name, newName);
+    strcpy(students[indexFound].name, newName);
   }
-  if(newAge != students[foundIndex].age)
+  if(newAge != students[indexFound].age)
   {
-    students[foundIndex].age = newAge;
+    students[indexFound].age = newAge;
   }
-  if(newGpa != students[foundIndex].gpa)
+  if(newGpa != students[indexFound].gpa)
   {
-    students[foundIndex].gpa = newGpa;
+    students[indexFound].gpa = newGpa;
   }
-  if(strcmp(newClass, students[foundIndex].class) != 0)
+  if(strcmp(newClass, students[indexFound].class) != 0)
   {
-    strcpy(students[foundIndex].class, newClass);
+    strcpy(students[indexFound].class, newClass);
   }
 }
 
 void deleteStudent(int studentId)
 {
-  int foundIndex = studentExists(studentId);
-  if(foundIndex > -1)
+  int indexFound = studentExists(studentId);
+  if(indexFound > -1)
   {
-    for(int i = foundIndex; i < index; i++)
+    for(int i = indexFound; i < index; i++)
     {
       students[i] = students[i+1];
     }
@@ -265,6 +309,6 @@ void deleteStudent(int studentId)
   }
   else
   {
-    printf("Student not found");
+    printf("Student not found\n");
   }
 }
