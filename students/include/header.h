@@ -18,5 +18,6 @@ int studentExists(int);
 bool findStudent(int);
 void editStudent(int);
 void updateStudent(int, char[50], int, double, char[3]);
+void deleteStudent(int);
 
 #endif

@@ -23,7 +23,7 @@ void menu()
   while(run)
   {
     int selectedId;
-    printf("A. Add\nL. List\nF. Find\nU. Update\nQ. Quit\n");
+    printf("A. Add\nL. List\nF. Find\nU. Update\nD. Delete\nQ. Quit\n");
     char option;
     scanf(" %c", &option);
     option = toupper(option);
@@ -76,11 +76,16 @@ void menu()
         scanf("%d", &selectedId);
         editStudent(selectedId);
         break;
+      case 'D':
+        printf("Id: ");
+        scanf("%d", &selectedId);
+        deleteStudent(selectedId);
+        break;
       case 'Q':
         run = false;
         break;
       default:
-        printf("Enter a valid option");
+        printf("Enter a valid option\n");
         break;
     }
   }
@@ -244,5 +249,22 @@ void updateStudent(int foundIndex, char newName[50], int newAge, double newGpa, 
   if(strcmp(newClass, students[foundIndex].class) != 0)
   {
     strcpy(students[foundIndex].class, newClass);
+  }
+}
+
+void deleteStudent(int studentId)
+{
+  int foundIndex = studentExists(studentId);
+  if(foundIndex > -1)
+  {
+    for(int i = foundIndex; i < index; i++)
+    {
+      students[i] = students[i+1];
+    }
+    index--;
+  }
+  else
+  {
+    printf("Student not found");
   }
 }
