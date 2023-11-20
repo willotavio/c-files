@@ -17,7 +17,7 @@ void listStudents();
 int studentExists(int);
 bool findStudent(int);
 void editStudent(int);
-void updateStudent(int, char[50], int, double, char[3]);
+void updateStudent(int, char *, int, double, char *);
 void deleteStudent(int);
 void freeMemory();
 

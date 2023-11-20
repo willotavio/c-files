@@ -211,12 +211,31 @@ void editStudent(int studentId)
   int indexFound = studentExists(studentId);
   if(indexFound > -1)
   {
-    char newName[50];
-    strcpy(newName, students[indexFound].name);
+    char *newName = (char *)malloc(50 * sizeof(char));
+    if(newName == NULL)
+    {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(EXIT_FAILURE);
+    }
+    if(strcpy(newName, students[indexFound].name) == NULL)
+    {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(EXIT_FAILURE);
+    }
+
     int newAge = students[indexFound].age;
     double newGpa = students[indexFound].gpa;
-    char newClass[3];
-    strcpy(newClass, students[indexFound].class);
+    char *newClass = (char *)malloc(3 * sizeof(char));
+    if(newClass == NULL)
+    {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(EXIT_FAILURE);
+    }
+    if(strcpy(newClass, students[indexFound].class) == NULL)
+    {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(EXIT_FAILURE);
+    }
     bool editing = true;
     while(editing)
     {
@@ -269,6 +288,8 @@ void editStudent(int studentId)
           break;
       }
     }
+  free(newName);
+  free(newClass);
   }
   else
   {
@@ -276,11 +297,15 @@ void editStudent(int studentId)
   }
 }
 
-void updateStudent(int indexFound, char newName[50], int newAge, double newGpa, char newClass[3])
+void updateStudent(int indexFound, char *newName, int newAge, double newGpa, char *newClass)
 {
   if(strcmp(newName, students[indexFound].name) != 0)
   {
-    strcpy(students[indexFound].name, newName);
+    if(strncpy(students[indexFound].name, newName, strlen(newName) + 1) == NULL)
+    {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(EXIT_FAILURE);
+    }
   }
   if(newAge != students[indexFound].age)
   {
@@ -292,7 +317,11 @@ void updateStudent(int indexFound, char newName[50], int newAge, double newGpa, 
   }
   if(strcmp(newClass, students[indexFound].class) != 0)
   {
-    strcpy(students[indexFound].class, newClass);
+    if(strncpy(students[indexFound].class, newClass, strlen(newClass) + 1) == NULL)
+    {
+      fprintf(stderr, "Memory allocation failed\n");
+      exit(EXIT_FAILURE);
+    }
   }
 }
 
