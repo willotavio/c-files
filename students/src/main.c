@@ -301,11 +301,14 @@ void updateStudent(int indexFound, char *newName, int newAge, double newGpa, cha
 {
   if(strcmp(newName, students[indexFound].name) != 0)
   {
-    if(strncpy(students[indexFound].name, newName, strlen(newName) + 1) == NULL)
+    free(students[indexFound].name);
+    students[indexFound].name = (char *) malloc(strlen(newName) + 1);
+    if(students[indexFound].name == NULL)
     {
       fprintf(stderr, "Memory allocation failed\n");
       exit(EXIT_FAILURE);
     }
+    strcpy(students[indexFound].name, newName);
   }
   if(newAge != students[indexFound].age)
   {
@@ -317,12 +320,15 @@ void updateStudent(int indexFound, char *newName, int newAge, double newGpa, cha
   }
   if(strcmp(newClass, students[indexFound].class) != 0)
   {
-    if(strncpy(students[indexFound].class, newClass, strlen(newClass) + 1) == NULL)
+    free(students[indexFound].class);
+    students[indexFound].class = (char *) malloc(strlen(newClass) + 1);
+    if(students[indexFound].class == NULL)
     {
       fprintf(stderr, "Memory allocation failed\n");
       exit(EXIT_FAILURE);
     }
   }
+  strcpy(students[indexFound].class, newClass);
 }
 
 void deleteStudent(int studentId)
@@ -330,6 +336,8 @@ void deleteStudent(int studentId)
   int indexFound = studentExists(studentId);
   if(indexFound > -1)
   {
+    free(students[indexFound].name);
+    free(students[indexFound].class);
     for(int i = indexFound; i < index; i++)
     {
       students[i] = students[i+1];
