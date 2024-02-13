@@ -10,6 +10,7 @@ struct Player
 void showGame(char[], int);
 int checkVictory(char[]);
 bool checkPositions(char[], int);
+void clearGame(char*, int);
 
 int main()
 {
@@ -27,44 +28,72 @@ int main()
   player2.score = 0;
 
   bool close = false;
-  int turn = 0;
 
-  while(true)
+  int play = true;
+  while(play)
   { 
-    showGame(positions, size);
-    bool victory = checkVictory(positions);
-    if(victory == 1)
-    {
-      player1.score += 1;
-      break;
-    }
-    else if(victory == 2)
-    {
-      player2.score += 1;
-      break;
-    }
+    int option;
+    int turn = 0;
+    printf("Player 1 score: %d\nPlayer 2 score: %d\n", player1.score, player2.score);
+    printf("1. Play\n2. Quit\n");
 
-    if(turn == 0)
+    scanf("%d", &option);
+    bool gameEnd = false;
+
+    switch(option)
     {
-      printf("Player 1 turn: \n");
-      printf("Enter a position: \n");
-      scanf("%d", &position);
-      if(checkPositions(positions, position))
-      {
-        positions[position-1] = player1.symbol;
-        turn = 1;
-      }
-    }
-    else
-    {
-      printf("Player 2 turn: \n");
-      printf("Enter a position: \n");
-      scanf("%d", &position);
-      if(checkPositions(positions, position))
-      {
-        positions[position-1] = player2.symbol;
-        turn = 0;
-      }
+      case 1:
+        while(!gameEnd)
+        {
+          showGame(positions, size);
+          int victory = checkVictory(positions);
+          if(victory == 1)
+          {
+            player1.score += 1;
+            gameEnd = true;
+            clearGame(positions, size);
+            break;
+          }
+          else if(victory == 2)
+          {
+            player2.score += 1;
+            gameEnd = true;
+            clearGame(positions, size);
+            break;
+          }
+
+          if(turn == 0)
+          {
+            printf("Player 1 turn: \n");
+            printf("Enter a position: \n");
+            scanf("%d", &position);
+            if(checkPositions(positions, position))
+            {
+              positions[position-1] = player1.symbol;
+              turn = 1;
+            }
+          }
+          else
+          {
+            printf("Player 2 turn: \n");
+            printf("Enter a position: \n");
+            scanf("%d", &position);
+            if(checkPositions(positions, position))
+            {
+              positions[position-1] = player2.symbol;
+              turn = 0;
+            }
+          }
+        }
+        break;
+
+      case 2:
+        printf("Quitting");
+        play = false;
+        break;
+
+      default:
+        break;
     }
 
   }
@@ -127,7 +156,7 @@ int checkVictory(char positions[]){
   )
   {
     printf("Player 2 won\n");
-    return 1;
+    return 2;
   }
   else
   {
@@ -143,4 +172,12 @@ bool checkPositions(char positions[], int position)
     return false;
   }
   return true;
+}
+
+void clearGame(char *positions, int size)
+{
+  for(int i = 0; i < size; i++)
+  {
+    positions[i] = ' ';
+  }
 }
