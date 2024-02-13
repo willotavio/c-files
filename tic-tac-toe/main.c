@@ -77,8 +77,18 @@ int main()
           if(turn == 0)
           {
             printf("Player 1 turn: \n");
+
             printf("Enter a position: \n");
             scanf("%d", &position);
+            
+            while(position < 1 || position > 9)
+            {
+              printf("Invalid position\n");
+              showGame(positions, size);
+              printf("Enter a position: \n");
+              scanf("%d", &position);
+            }
+
             if(checkPositions(positions, position))
             {
               positions[position-1] = player1.symbol;
@@ -88,12 +98,23 @@ int main()
             {
               printf("Spot already filled\n");
             }
+            position = 0;
           }
           else
           {
             printf("Player 2 turn: \n");
+            
             printf("Enter a position: \n");
             scanf("%d", &position);
+
+            while(position < 1 || position > 9)
+            {
+              printf("Invalid position\n");
+              showGame(positions, size);
+              printf("Enter a position: \n");
+              scanf("%d", &position);
+            }
+
             if(checkPositions(positions, position))
             {
               positions[position-1] = player2.symbol;
@@ -103,6 +124,7 @@ int main()
             {
               printf("Spot already filled\n");
             }
+            position = 0;
           }
         }
         break;
