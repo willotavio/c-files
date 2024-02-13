@@ -11,6 +11,7 @@ void showGame(char[], int);
 int checkVictory(char[]);
 bool checkPositions(char[], int);
 void clearGame(char*, int);
+bool checkDraw(char[], int);
 
 int main()
 {
@@ -49,6 +50,7 @@ int main()
           int victory = checkVictory(positions);
           if(victory == 1)
           {
+            printf("Player 1 won\n");
             player1.score += 1;
             gameEnd = true;
             clearGame(positions, size);
@@ -56,7 +58,17 @@ int main()
           }
           else if(victory == 2)
           {
+            printf("Player 2 won\n");
             player2.score += 1;
+            gameEnd = true;
+            clearGame(positions, size);
+            break;
+          }
+
+          bool draw = checkDraw(positions, size);
+          if(draw)
+          {
+            printf("Draw\n");
             gameEnd = true;
             clearGame(positions, size);
             break;
@@ -72,6 +84,10 @@ int main()
               positions[position-1] = player1.symbol;
               turn = 1;
             }
+            else
+            {
+              printf("Spot already filled\n");
+            }
           }
           else
           {
@@ -82,6 +98,10 @@ int main()
             {
               positions[position-1] = player2.symbol;
               turn = 0;
+            }
+            else
+            {
+              printf("Spot already filled\n");
             }
           }
         }
@@ -134,7 +154,6 @@ int checkVictory(char positions[]){
     positions[2] == 'x' && positions[4] == 'x' && positions[6] == 'x'
   )
   {
-    printf("Player 1 won\n");
     return 1;
   }
   else if(
@@ -155,7 +174,6 @@ int checkVictory(char positions[]){
     positions[2] == 'o' && positions[4] == 'o' && positions[6] == 'o'
   )
   {
-    printf("Player 2 won\n");
     return 2;
   }
   else
@@ -168,7 +186,6 @@ bool checkPositions(char positions[], int position)
 {
   if(positions[position-1] == 'x' || positions[position-1] == 'o')
   {
-    printf("Spot already filled\n");
     return false;
   }
   return true;
@@ -180,4 +197,16 @@ void clearGame(char *positions, int size)
   {
     positions[i] = ' ';
   }
+}
+
+bool checkDraw(char positions[], int size)
+{
+  for(int i = 0; i < size; i++)
+  {
+    if(positions[i] == ' ')
+    {
+      return false;
+    }
+  }
+  return true;
 }
